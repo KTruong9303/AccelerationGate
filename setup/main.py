@@ -61,13 +61,15 @@ Rule: 2 bên bắn nhau liên tục
 Cốt truyện: 2 nhà Khoa học đại tài Vayce và Jiktor đã nghiên cứu thành công 1 cỗ máy có tên là hextech. Vayce muốn dùng cỗ máy này để giúp mọi người, còn Jiktor muốn sử dụng cỗ máy để cứu em gái mình. 2 bên xảy ra mâu thuẫn và quyết chiến với nhau.
 DONE;
 < tạo 2 nhân vật: di chuyển 
--> map: hình ảnh, cổng gia tốc -> chưa cần, chủ yếu cần collision của cái cổng -> rồi lấy ảnh đẹp đẹp trên mạng về, rồi kêu làm trên map tile
--> bắn đạn 
+-> map: hình ảnh, cổng gia tốc
+>- bắn đạn [y]
 -> chịu sát thương
--> đạn qua cổng gia tốc
--> stop round
+>- đạn qua cổng gia tốc [y]
+-> stop round  
 -> update kĩ năng
--> clock đồng hồ
+-> clock đồng hồ  
 -> pause
 -> menu
+-> full màn hình
+-> animation
 '''
