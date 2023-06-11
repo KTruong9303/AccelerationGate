@@ -1,10 +1,35 @@
 import pygame, sys
 from settings import *
 from level import Level
-class Game:												
-	
-														
+class Game:		
+	"""
+	A class store general setup 
+	...
+	Atributes:
+		screen <class pygame.surface.Surface>: create a screen
+		clock <class pygame.tiem.Clock>: create time
+		level <class level.Level>: create objects
+		background <class pygame.surface.Surface>: create background
+	---------
+	Methods
+		run():
+			run the game.
+	-------
+	"""																					
 	def __init__(self):
+		"""
+		Constructs all the necessary attributes for the game.
+		Parameters
+			screen <class pygame.surface.Surface>: create a screen
+			clock <class pygame.tiem.Clock>: create time
+			level <class level.Level>: create objects
+			background <class pygame.surface.Surface>: create background
+		----------
+			
+		Returns
+		-------
+		None
+		"""
 		pygame.init()
 		self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))  #độ lớn màn hình
 		pygame.display.set_caption('Acceleration Gate') #set caption         
@@ -13,29 +38,36 @@ class Game:
 		self.background = pygame.image.load("../graphics/map.png")
 ###############################################################
 	def run(self):
+		"""
+		create Game loop, run the game.
+		Parameters
+		-----------
+		Returns
+		--------
+		None
+		"""
 		while True: #Gameloop
 			for event in pygame.event.get():  #exit game
 				if event.type == pygame.QUIT:
 					pygame.quit()
 					sys.exit()
-				#if pause?
-				#if new round
 			dt = self.clock.tick() / 1000   #delta time
-			# print(dt)
 			self.screen.blit(self.background, (0, 0))
 			self.level.run(dt)       
-			pygame.display.flip()   #????
+			# pygame.display.flip()   #????
 			pygame.display.update()   #????
 
-
+'=============Run the game====================================================='
 import os
-os.chdir('D:\VS_Code_file\python\IE221\RescureCity\project\setup')
-
+os.chdir('D:\VS_Code_file\python\IE221\RescureCity\_accelerationGate\setup_code')
 
 if __name__ == '__main__':
 	game = Game()
-	################
+#####################################################
 	game.run()
+
+
+
 
 
 
@@ -67,21 +99,14 @@ DONE;
 > bắn đạn [y]
 > chịu sát thương -> hiển thị thanh máu [y]
 > đạn qua cổng gia tốc [y]
--> pause
 -> cơ chế tự động nhắm how about có cái cần chỉnh độ lên và độ xuống nhể
+-> circle collision
 -> menu
--> full màn hình
--> animation: người, đạn, trụ, blah blah
+-> tạo map 4 mùa
+-> popup thanh chọn: pause
 -> update kĩ năng 
+-> animation: người, đạn, trụ, blah blah
 -> clock đồng hồ -> hiển thị đồng hồ  
 -> deploy thành game
--> câu đố
-----------
-game có 4 trụ 4 góc và cổng gia tốc hình trụ ở giữa
--> bấm vào hiện ra bảng -> tạo ra bài toán -> nhận input
-xong rồi phải đi giải từng trụ để lấy đủ 3 key thì mở đc cổng và chạy trốn hoặc là phải solokill đối phương
-giờ nè -> key variable
-game này 2 người chơi còn train máy hơi khó
-giờ 2 người di chuyển thì ez nè
-rồi bắn đạn thì đổi cơ chế, ko bắn theo chuột nữa mà nhắm tự động 
+-> full màn hình
 '''
