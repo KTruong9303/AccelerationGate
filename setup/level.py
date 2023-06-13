@@ -61,13 +61,13 @@ class Level:
 			None
 		------------
 		'''
-		self.player1 = Player((0,0), self.all_sprites, self.collision_sprites,self.bullet)
-		self.player2 = NPC((600,360), self.all_sprites, self.collision_sprites,self.bullet)
+		self.player1 = Keyboard_player((0,0), self.all_sprites, self.collision_sprites,self.bullet)
+		self.player2 = Mouse_player((600,360), self.all_sprites, self.collision_sprites,self.bullet)
 		self.GATE = Gate((640,360),[self.all_sprites,self.collision_sprites])
-		self.wall1 = Clob((0,0),(100,100),[self.all_sprites,self.collision_sprites])
-		self.wall2 = Clob((0,620),(100,100),[self.all_sprites,self.collision_sprites])
-		self.wall3 = Clob((1180,0),(100,100),[self.all_sprites,self.collision_sprites])
-		self.wall4 = Clob((1180,620),(100,100),[self.all_sprites,self.collision_sprites])
+		# self.wall1 = Clob((0,0),(100,100),[self.all_sprites,self.collision_sprites])
+		# self.wall2 = Clob((0,620),(100,100),[self.all_sprites,self.collision_sprites])
+		# self.wall3 = Clob((1180,0),(100,100),[self.all_sprites,self.collision_sprites])
+		# self.wall4 = Clob((1180,620),(100,100),[self.all_sprites,self.collision_sprites])
 ##############################################################################
 	def run(self,dt):
 		'''

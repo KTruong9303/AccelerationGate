@@ -4,7 +4,6 @@ from support import import_folder
 # import pygame_textinput
 # from pygame_textinput import TextInput
 import random as rand
-import math
 
 
 class Player(pygame.sprite.Sprite):
@@ -60,8 +59,8 @@ class Player(pygame.sprite.Sprite):
 		'''
 		super().__init__(group)
 		#load the gif before 
-		# self.import_assets('char')
-		self.status = 'down'
+		self.import_assets()
+		self.status = 'left'
 		self.frame_index = 1
 		# general setup
 		self.image = self.animations[self.status][self.frame_index]#image
@@ -84,7 +83,7 @@ class Player(pygame.sprite.Sprite):
 		self.screen = pygame.display.get_surface() #all
 		self.ratio = 1 #all
 		
-	def import_assets(self,assets): #riêng
+	def import_assets(self):
 		'''
 		A function import the image asset for player. Update to self.animations 
 		...
@@ -95,15 +94,14 @@ class Player(pygame.sprite.Sprite):
 		---------
 		'''
 		#chứa gif
-		path = '../graphics/' + assets + '/'
 		self.animations = {'up': [],'down': [],'left': [],'right': [],
 						   'right_idle':[],'left_idle':[],'up_idle':[],'down_idle':[]}
 		for animation in self.animations.keys():
-			full_path = path + animation
+			full_path = '../graphics/char/' + animation
 			self.animations[animation] = import_folder(full_path)
 
 ######################################################################
-	def animate(self,dt):  #_chung
+	def animate(self,dt):
 		'''
 		A function that change the image from asset
 		Parameters:
@@ -117,7 +115,7 @@ class Player(pygame.sprite.Sprite):
 
 		self.image = self.animations[self.status][int(self.frame_index)]
 
-	def input(self):  #riêng
+	def input(self):
 		'''
 		A function that receive input from person
 		Parameters:
@@ -154,7 +152,7 @@ class Player(pygame.sprite.Sprite):
 				self.create_bullet()
 				self.cooldown = 1000
 		 
-	def collision(self): #_chung
+	def collision(self):
 		'''
 		A function that detect collision and prevent player go overlap the objects
 		Parameters:
@@ -183,7 +181,7 @@ class Player(pygame.sprite.Sprite):
 				if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
 					self.rect.top  = sprite.rect.bottom
 					self.pos.y = self.rect.y	
-	def window_collision(self): #_chung
+	def window_collision(self):
 		'''
 		A function that prevent player go outside of the screen
 		Parameters:
@@ -208,7 +206,7 @@ class Player(pygame.sprite.Sprite):
 			self.pos.y = self.rect.y
 			# self.direction.y *= -1
 
-	def get_status(self):  #_chung
+	def get_status(self): 
 		"""
 		A function check if the player not moving then set the status to idle
 		Parameters:
@@ -218,7 +216,7 @@ class Player(pygame.sprite.Sprite):
 		if self.direction.magnitude() == 0:  #khong di chuyen
 			self.status = self.status.split('_')[0] + '_idle'
 
-	def move(self,dt): #_chung
+	def move(self,dt):
 		'''
 		A function that move the player as the direction and the pos changing
 		Parameters:
@@ -242,7 +240,7 @@ class Player(pygame.sprite.Sprite):
 		self.collision()
 		self.window_collision()
 
-	def create_bullet(self): #riêng
+	def create_bullet(self):
 		'''
 		A function create a bullet when it's called
 		Parameter:
@@ -255,7 +253,7 @@ class Player(pygame.sprite.Sprite):
 		direction = pygame.mouse.get_pos()
 		return Bullet(self.rect.center,[self.gr,self.bullet],self.obstacles,0,direction)
 
-	def health_bar(self,x = 0,y = 0,w = 720,h = 10,ratio = 1): #riêng
+	def health_bar(self,x = 0,y = 0,w = 640,h = 10,ratio = 1):
 		'''
 		A function draw a health bar and update it along to ratio
 		Parameters:
@@ -266,8 +264,8 @@ class Player(pygame.sprite.Sprite):
 			None
 		'''
 		pygame.draw.rect(self.screen, 'red', (x,y,w,h))
-		pygame.draw.rect(self.screen, 'green', (x,y-h*ratio,w,ratio*h))
-	def get_damage(self):      #riêng
+		pygame.draw.rect(self.screen, 'green', (x,y,w*ratio,h))
+	def get_damage(self):
 		'''
 		A function update the health through self.ratio whenever get shoot
 		Parameters:
@@ -283,7 +281,7 @@ class Player(pygame.sprite.Sprite):
 			text_surface = my_font.render(f'Game Over: Bear Win!', False, (0, 0, 0))
 			self.screen.blit(text_surface, (500,0))
 	
-	def update(self, dt):      #_chung
+	def update(self, dt):
 		'''
 		A function update every data of the player 
 		Parameter:
@@ -365,26 +363,26 @@ class Bullet(pygame.sprite.Sprite):
 
 class Keyboard_player(Player):
 	def __init__(self, pos, group, obstacles,bullet):   #vị trí và camera
-		self.import_assets('character')
 		super().__init__(pos,group,obstacles,bullet)
+
 		self.speed = 500
 
-		self.angle = 0
-
-	def animate(self,dt):  #_chung
+	def import_assets(self):
 		'''
-		A function that change the image from asset
-		Parameters:
-			dt (float): delta time to make the image update following the frame
+		A function import the image asset for player. Update to self.animations 
+		...
+		Parameter:
+		---------
 		Return:
 			None
+		---------
 		'''
-		self.frame_index += 12 * dt #tốc độ gif
-		if self.frame_index >= len(self.animations[self.status]):
-			self.frame_index = 0
-
-		self.image = self.animations[self.status][int(self.frame_index)]
-
+		#chứa gif
+		self.animations = {'up': [],'down': [],'left': [],'right': [],
+						   'right_idle':[],'left_idle':[],'up_idle':[],'down_idle':[]}
+		for animation in self.animations.keys():
+			full_path = '../graphics/char/' + animation
+			self.animations[animation] = import_folder(full_path)
 	def input(self):
 		'''
 		A function that receive input from person
@@ -415,82 +413,51 @@ class Keyboard_player(Player):
 		click = pygame.mouse.get_pressed()
 		current_time = pygame.time.get_ticks()
 		
-		if self.cooldown < 0:
-			bullets = self.draw_bullet(4)
-			if keys[pygame.K_SPACE]:
-				self.create_bullet(bullets)
-				#self.shoot
-				self.cooldown = 1000
-		else:
+		if self.cooldown >= 0:
 			self.cooldown -= 4
+		if keys[pygame.K_SPACE]:
+			if self.cooldown < 0:
+				self.create_bullet()
+				self.cooldown = 1000
+	
+	
 
-		self.angle += 0.003
-	def draw_bullet(self,number):
-		bullet_positions = []
-		addition_angle = round(45/number)
-		for angle in range (0,number):
-			angle *= addition_angle
-			bul_pos = (100 * math.cos(self.angle + angle) + self.rect.center[0],100 * math.sin(self.angle + angle) + self.rect.center[1])
-			pygame.draw.circle(self.screen,'red',bul_pos,10)
-			bullet_positions.append(bul_pos)
-
-		return bullet_positions
-
-	def create_bullet(self,location):
-		'''
-		A function create a bullet when it's called
-		Parameter:
-			rect.center (tuple): current location of player
-			gr, bullet <class Group>: set the bullet group
-			0: set the bullet id to know who shoot it
-		Return:
-			a bullet class
-		'''
-		for buls in location:
-			Bullet(buls,[self.gr,self.bullet],self.obstacles,0,self.rect.center)
-		
-	def health_bar(self,x = 0,y = 0,w = 10,h = 720,ratio = 1): 
-		'''
-		A function draw a health bar and update it along to ratio
-		Parameters:
-			x, y (int): x, y is the left top location of the bar
-			w, h (int): w, h is the width and height of the bar
-			ratio (float): the rate of health
-		Return:
-			None
-		'''
-		pygame.draw.rect(self.screen, 'red', (x,y,w,h))
-		pygame.draw.rect(self.screen, 'green', (x,720-ratio*h,w,h*ratio))
-	def get_damage(self):      
-		'''
-		A function update the health through self.ratio whenever get shoot
-		Parameters:
-		Return:
-			None
-		'''
-		collision_sprites = pygame.sprite.spritecollide(self,self.bullet, False, pygame.sprite.collide_mask)
-		for sprite in collision_sprites:
-			if sprite.side == 1:
-				self.ratio -= 0.01
-		# if pygame.sprite.spritecollide(self, self.bullet, False, pygame.sprite.collide_mask):
-		# 	self.ratio -= 0.01
-
-		if self.ratio < 0:
-			pygame.font.init()
-			my_font = pygame.font.SysFont('Comic Sans MS', 30)
-			text_surface = my_font.render(f'Game Over: Bear Win!', False, (0, 0, 0))
-			self.screen.blit(text_surface, (500,0))
-		
 class Mouse_player(Player):
 	def __init__(self, pos, group, obstacles,bullet):   #vị trí và camera
-		self.import_assets('character2')
 		super().__init__(pos, group, obstacles,bullet)
 		#load the gif before 
-		self.speed = 300
+		self.import_assets()
+		self.status = 'left'
+		self.frame_index = 1
+
+		# general setup
+		self.image = self.animations[self.status][self.frame_index]#image
+		self.rect = self.image.get_rect(center = pos)
+		self.old_rect = self.rect.copy()
+		self.obstacles = obstacles
+
+		# movement attributes
+		self.direction = pygame.math.Vector2()  #hướng đi
 		self.destination = pygame.math.Vector2()  #hướng đi
+		self.pos = pygame.math.Vector2(self.rect.center)  #vị trí
+		self.speed = 300
+		self.cooldown = -1
 
-
+		## self.heal = 100
+		self.gr = group
+	#animation of character
+	def import_assets(self):
+		#chứa gif
+		self.animations = {'up': [],'down': [],'left': [],'right': [],
+						   'right_idle':[],'left_idle':[],'up_idle':[],'down_idle':[],
+						   'right_hoe':[],'left_hoe':[],'up_hoe':[],'down_hoe':[],
+						   'right_axe':[],'left_axe':[],'up_axe':[],'down_axe':[],
+						   'right_water':[],'left_water':[],'up_water':[],'down_water':[]}
+		for animation in self.animations.keys():
+			full_path = '../graphics/character/' + animation
+			self.animations[animation] = import_folder(full_path)
     ######################################################################
+	#Nhận input từ bàn phím
 	def input(self):
 		keys = pygame.key.get_pressed()
 		if pygame.mouse.get_pressed()[2]:
@@ -500,13 +467,10 @@ class Mouse_player(Player):
 		if self.direction.magnitude() > 0:
 			self.direction = self.direction.normalize()
 		
-		if self.direction.y >= 0:
-			self.status = 'down'
+		if self.direction.x > 0:
+			self.status = 'right'
 		else:
-			if self.direction.x > 0:
-				self.status = 'right'
-			else:
-				self.status = 'left'
+			self.status = 'left'
 		
 
 		if abs(self.destination.x - self.pos.x) < 10 or abs(self.destination.y - self.pos.y) < 10:
@@ -531,9 +495,9 @@ class Mouse_player(Player):
 		'''
 		direction = pygame.mouse.get_pos()
 		return Bullet(self.rect.center,[self.gr,self.bullet],self.obstacles,1,direction)
-	def health_bar(self,x = 1270,y = 0,w = 10,h = 720,ratio =1):
+	def health_bar(self,x = 640,y = 0,w = 640,h = 10,ratio =1):
 		pygame.draw.rect(self.screen, 'red', (x,y,w,h))
-		pygame.draw.rect(self.screen, 'green', (x,720-h*ratio,w,ratio*h))		 
+		pygame.draw.rect(self.screen, 'green', (1280-w*ratio,y,w*ratio,h))		 
 	def get_damage(self):
 		collision_sprites = pygame.sprite.spritecollide(self,self.bullet, False, pygame.sprite.collide_mask)
 		for sprite in collision_sprites:
