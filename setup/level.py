@@ -2,6 +2,7 @@ import pygame
 from settings import *
 from player import *
 from sprites import *
+import random as rand
 
 class Level:
 	'''
@@ -39,32 +40,17 @@ class Level:
 		self.all_sprites = pygame.sprite.Group()
 		self.collision_sprites = pygame.sprite.Group()
 		self.bullet = pygame.sprite.Group()
-		#trait for player
-		self.mouse_trait = []
-		self.keyboard_trait = []
 		#background
 		self.background = pygame.image.load("../graphics/map_co_ngu/final_map.png")
 		## method: setup
 		self.setup()      #tạo nhân vật
 
 	def spawn_creep(self, round):
-		if round == 2:
-			#generate many mini creep
-			pass
-		elif round == 3:
-			#rain and creep is bigger
-			pass
-		elif round == 4:
-			#generate bigger creep can shoot
-			pass
-		elif round == 5:
-			#1 big boss go circle and shooting
-			pass
-		pass
+		'''
+		function create creep every round
+		'''
+		self.wall1 = Clob((230+rand.randint(0,100),200),(40*round,25*round),[self.all_sprites,self.collision_sprites])
 
-	def get_trait(self,trait1,trait2):
-		self.mouse_trait.append(trait1)
-		self.keyboard_trait.append(trait2)
 
 	def setup(self):
 		'''
@@ -84,12 +70,20 @@ class Level:
 		------------
 		'''
 		self.player1 = Keyboard_player((100,100), self.all_sprites, self.collision_sprites,self.bullet)
-		self.player2 = Mouse_player((660,400), self.all_sprites, self.collision_sprites,self.bullet)
+		self.player2 = Mouse_player((660,430), self.all_sprites, self.collision_sprites,self.bullet)
 		self.GATE = Gate((625,335),[self.all_sprites,self.collision_sprites])
-		self.wall1 = Clob((200,200),(100,100),[self.all_sprites,self.collision_sprites])
+		
 		# self.wall2 = Clob((0,620),(100,100),[self.all_sprites,self.collision_sprites])
 		# self.wall3 = Clob((1180,0),(100,100),[self.all_sprites,self.collision_sprites])
 		# self.wall4 = Clob((1180,620),(100,100),[self.all_sprites,self.collision_sprites])
+	def get_trait(self,trait1,trait2):
+		'''
+		function update player skill
+		'''
+		self.player1.traits = trait1
+		self.player2.traits = trait2
+		self.player1.implement_traits()
+		self.player2.implement_traits()
 ##############################################################################
 	def run(self,dt):
 		'''
@@ -100,6 +94,7 @@ class Level:
 		Return:
 			None
 		'''
+
 		self.all_sprites.draw(self.display_surface)  #???
 		self.all_sprites.update(dt)  #???
 

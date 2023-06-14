@@ -84,7 +84,19 @@ class Player(pygame.sprite.Sprite):
 		
 		self.screen = pygame.display.get_surface() #all
 		self.ratio = 1 #all
-		
+		self.ratio_loss = 0.01
+
+		# sound effect
+		self.sound_walk = pygame.mixer.Sound('../sound/walk.wav') 
+		self.sound_shuriken = pygame.mixer.Sound('../sound/shuriken.wav') 
+		self.sound_magic = pygame.mixer.Sound('../sound/magic.wav') 
+	
+		#bullet_trait
+		self.traits = -1
+		self.buls_speed = 1000
+		self.buls_number = 1
+		self.cooldown_value = 200
+
 	def import_assets(self,assets): #riêng
 		'''
 		A function import the image asset for player. Update to self.animations 
@@ -102,6 +114,20 @@ class Player(pygame.sprite.Sprite):
 		for animation in self.animations.keys():
 			full_path = path + animation
 			self.animations[animation] = import_folder(full_path)
+	def implement_traits(self):
+		if self.traits == 0:
+			self.buls_speed *= 1.5
+		elif self.traits == 1:
+			self.buls_number += 1
+		elif self.traits == 2:
+			self.ratio_loss /= 2
+		elif self.traits == 3:
+			self.speed *= 1.5
+		elif self.traits == 4:
+			self.cooldown_value *= 0.5
+		elif self.traits == 5:
+			self.ratio *= 0.5
+			self.buls_number *= 3
 
 ######################################################################
 	def animate(self,dt):  #_chung
@@ -145,6 +171,9 @@ class Player(pygame.sprite.Sprite):
 		else:
 			self.direction.x = 0
 		
+		if self.direction.x != 0 or self.direction.y != 0:
+			
+			pygame.mixer.music.play(-1)	
 		click = pygame.mouse.get_pressed()
 		current_time = pygame.time.get_ticks()
 		
@@ -153,7 +182,7 @@ class Player(pygame.sprite.Sprite):
 		if keys[pygame.K_SPACE]:
 			if self.cooldown < 0:
 				self.create_bullet()
-				self.cooldown = 100
+				self.cooldown = self.cooldown_value
 		 
 	def collision(self): #_chung
 		'''
@@ -164,8 +193,11 @@ class Player(pygame.sprite.Sprite):
 		'''
 		collision_sprites = pygame.sprite.spritecollide(self,self.obstacles, False)#, pygame.sprite.collide_mask)
 		if collision_sprites:
+			self.ratio -= 0.001
+			pygame.draw.circle(self.screen,'red',self.rect.center,20,3)
 			for sprite in collision_sprites:
 					#collision on the right
+				
 				if self.rect.right >= sprite.rect.left and self.old_rect.right <= sprite.old_rect.left:
 					self.rect.right  = sprite.rect.left
 					self.pos.x = self.rect.x
@@ -184,6 +216,8 @@ class Player(pygame.sprite.Sprite):
 				if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
 					self.rect.top  = sprite.rect.bottom
 					self.pos.y = self.rect.y	
+		# if pygame.sprite.spritecollide(self,self.obstacles, False, pygame.sprite.collide_mask):
+				
 	def window_collision(self): #_chung
 		'''
 		A function that prevent player go outside of the screen
@@ -254,7 +288,9 @@ class Player(pygame.sprite.Sprite):
 			a bullet class
 		'''
 		direction = pygame.mouse.get_pos()
-		return Bullet(self.rect.center,[self.gr,self.bullet],self.obstacles,0,direction)
+		for i in  range (self.buls_number):
+			Bullet((self.rect[0] + self.direction * i * 20,self.rect[1] + self.direction * i * 20),[self.gr,self.bullet],self.obstacles,0,direction,self.buls_speed)
+
 
 	def health_bar(self,x = 0,y = 0,w = 720,h = 10,ratio = 1): #riêng
 		'''
@@ -276,7 +312,7 @@ class Player(pygame.sprite.Sprite):
 			None
 		'''
 		if pygame.sprite.spritecollide(self, self.bullet, False, pygame.sprite.collide_mask):
-			self.ratio -= 0.01
+			self.ratio -= self.ratio_loss
 
 		if self.ratio < 0:
 			pygame.font.init()
@@ -322,7 +358,7 @@ class Bullet(pygame.sprite.Sprite):
 		self.angle_speed = 10
 			
 	'''
-	def __init__(self, pos, group,obstacles,side,direction):
+	def __init__(self, pos, group,obstacles,side,direction,speed):
 		super().__init__(group)
 		# self.import_assets('bullet')
 		# self.status = 'flying'
@@ -338,7 +374,7 @@ class Bullet(pygame.sprite.Sprite):
 		self.side = side
 		self.obstacles = obstacles
 		self.group = group
-		self.speed = 1000
+		self.speed = speed
 		self.old_rect = self.rect.copy()
 		self.angle = 0
 		self.angle_speed = 10
@@ -384,9 +420,8 @@ class Bullet(pygame.sprite.Sprite):
 			# collision_sprites.append(self.obstacles)
 		if pygame.sprite.spritecollide(self,self.obstacles, False,pygame.sprite.collide_mask):
 			self.image = pygame.Surface((20,20))
-			# self.image = pygame.image.load('../graphics/bullet/shuriken')
-			self.image.fill((0,255,0))
-			self.speed = 2500
+			self.image = pygame.image.load('../graphics/bullet/shuriken_upper.png')
+			self.speed = 2000
 		#window
 		if self.rect.left < 0 or self.rect.right > 1280 or self.rect.top < 0 or self.rect.bottom > 720:
 			# self.group[0].remove(self)
@@ -455,17 +490,23 @@ class Keyboard_player(Player):
 		else:
 			self.direction.x = 0
 		
+		
+
 		click = pygame.mouse.get_pressed()
 		current_time = pygame.time.get_ticks()
 		
 		if self.cooldown < 0:
-			bullets = self.draw_bullet(4)
+			bullets = self.draw_bullet(self.buls_number+4)
 			if keys[pygame.K_SPACE]:
 				self.create_bullet(bullets)
+				self.sound_shuriken.play()
 				#self.shoot
-				self.cooldown = 100
+				self.cooldown = self.cooldown_value
 		else:
 			self.cooldown -= 4
+
+		if self.direction.x != 0 or self.direction.y != 0:
+			self.sound_walk.play()	
 
 		self.angle += 0.003
 	def draw_bullet(self,number):
@@ -489,8 +530,9 @@ class Keyboard_player(Player):
 		Return:
 			a bullet class
 		'''
+		
 		for buls in location:
-			Bullet(buls,[self.gr,self.bullet],self.obstacles,0,self.rect.center)
+			Bullet(buls,[self.gr,self.bullet],self.obstacles,0,self.rect.center,self.buls_speed)
 		
 	def health_bar(self,x = 0,y = 0,w = 10,h = 800,ratio = 1): 
 		'''
@@ -514,7 +556,7 @@ class Keyboard_player(Player):
 		collision_sprites = pygame.sprite.spritecollide(self,self.bullet, False, pygame.sprite.collide_mask)
 		for sprite in collision_sprites:
 			if sprite.side == 1:
-				self.ratio -= 0.01
+				self.ratio -= self.ratio_loss
 		# if pygame.sprite.spritecollide(self, self.bullet, False, pygame.sprite.collide_mask):
 		# 	self.ratio -= 0.01
 
@@ -550,18 +592,20 @@ class Mouse_player(Player):
 				self.status = 'right'
 			else:
 				self.status = 'left'
-		
 
-		if abs(self.destination.x - self.pos.x) < 10 or abs(self.destination.y - self.pos.y) < 10:
-			self.direction.x = 0
-			self.direction.y = 0
-		
 		if self.cooldown >= 0:
 			self.cooldown -= 4
 		if pygame.mouse.get_pressed()[0]:
 			if self.cooldown < 0:
 				self.create_bullet()
-				self.cooldown = 100
+				self.sound_magic.play()
+				self.cooldown = self.cooldown_value
+
+		if abs(self.destination.x - self.pos.x) < 10 or abs(self.destination.y - self.pos.y) < 10:
+			self.direction.x = 0
+			self.direction.y = 0
+		else:
+			self.sound_walk.play()
 	def create_bullet(self):
 		'''
 		A function create a bullet when it's called
@@ -573,7 +617,8 @@ class Mouse_player(Player):
 			a bullet class
 		'''
 		direction = pygame.mouse.get_pos()
-		return Bullet(self.rect.center,[self.gr,self.bullet],self.obstacles,1,direction)
+		for i in  range (0,self.buls_number):
+			Bullet((self.rect[0] +  i * 20,self.rect[1] +  i * 20),[self.gr,self.bullet],self.obstacles,1,direction,self.buls_speed)
 	def health_bar(self,x = 1270,y = 0,w = 10,h = 800,ratio =1):
 		pygame.draw.rect(self.screen, 'red', (x,y,w,h))
 		pygame.draw.rect(self.screen, 'green', (x,800-h*ratio,w,ratio*h))		 
@@ -581,7 +626,7 @@ class Mouse_player(Player):
 		collision_sprites = pygame.sprite.spritecollide(self,self.bullet, False, pygame.sprite.collide_mask)
 		for sprite in collision_sprites:
 			if sprite.side == 0:
-				self.ratio -= 0.01
+				self.ratio -= self.ratio_loss
 		if self.ratio < 0:
 			pygame.font.init()
 			my_font = pygame.font.SysFont('Comic Sans MS', 30)

@@ -11,7 +11,7 @@ trait_font = pygame.font.SysFont('Comic Sans MS', 20)
 
 class Game:		
 	"""
-	A class store general setup 
+	A class store general set up, for Game Loop, Main setting 
 	...
 	Atributes:
 		screen <class pygame.surface.Surface>: create a screen
@@ -44,6 +44,9 @@ class Game:
 		self.clock = pygame.time.Clock()         #thời gian
 		self.level = Level()					 #level là gì?
 		self.background = pygame.image.load("../graphics/map_co_ngu/final_map.png")
+		pygame.mixer.init()
+		
+		pygame.mixer.music.load('../sound/background_sound.wav') 	
 
 		self.game_paused = True
 		self.load_button()
@@ -53,8 +56,13 @@ class Game:
 		
 		self.A_picked = -1
 		self.B_picked = -1
+
+		self.rand = True
 		
 	def load_button(self):
+		'''
+		A function load the button image
+		'''
 		resume_img = pygame.image.load("../graphics/button/resume.png").convert_alpha()
 		option_img = pygame.image.load("../graphics/button/option.png").convert_alpha()
 		quit_img = pygame.image.load("../graphics/button/quit.png").convert_alpha()
@@ -85,21 +93,25 @@ class Game:
 		while True: #Gameloop
 			self.screen.blit(self.background, (0, 0))
 	#setting
+			
 			if self.game_paused == True:
+				
 				if self.menu_state == 'pick_trait':
-					i = 6#rand.randint(1,8)
+					if self.rand == True:
+						i = rand.randint(0,5)
+						self.rand = False
 					if self.trait1_button.draw(self.screen):
 						self.A_picked = i
 					elif self.trait2_button.draw(self.screen):
-						self.A_picked = (i+1)%8
+						self.A_picked = (i+1)%6
 					elif self.trait3_button.draw(self.screen):
-						self.A_picked = (i+2)%8
+						self.A_picked = (i+2)%6
 
 					text_surface = trait_font.render(f'{TRAIT[i]}', False, (0, 0, 0))
 					self.screen.blit(text_surface, (180,60)) 
-					text_surface = trait_font.render(f'{TRAIT[(i+1)%8]}', False, (0, 0, 0))
+					text_surface = trait_font.render(f'{TRAIT[(i+1)%6]}', False, (0, 0, 0))
 					self.screen.blit(text_surface, (180,260))
-					text_surface = trait_font.render(f'{TRAIT[(i+2)%8]}', False, (0, 0, 0))
+					text_surface = trait_font.render(f'{TRAIT[(i+2)%6]}', False, (0, 0, 0))
 					self.screen.blit(text_surface, (180,460))
 
 					keys = pygame.key.get_pressed()
@@ -107,15 +119,16 @@ class Game:
 					if keys[pygame.K_1] :
 						self.B_picked = i
 					elif keys[pygame.K_2] :
-						self.B_picked = (i+1)%8
+						self.B_picked = (i+1)%6
 					elif keys[pygame.K_3] :
-						self.B_picked = (i+2)%8		
+						self.B_picked = (i+2)%6		
 					
 					if self.A_picked > -1 and self.B_picked > -1:
 						self.level.get_trait(self.A_picked, self.B_picked)
 						self.A_picked = -1
 						self.B_picked = -1
 						self.game_paused = False
+						self.rand = True
 						self.menu_state = 'main'
 				elif self.menu_state == 'main':
 					if self.resume_button.draw(self.screen):
@@ -130,16 +143,22 @@ class Game:
 						self.game_paused = True
 						self.menu_state = 'main'
 					if self.volume_button.draw(self.screen):
-						self.game_paused = True
+						
+						# pygame.mixer.music.set_volume(0.5)
+						if pygame.mixer.music.get_busy():
+							pygame.mixer.music.stop()
+						else:
+							pygame.mixer.music.play(-1)
 			else:
 	#bat dau round
 				if 	self.timer < 0:
 					if self.timer == -1:
 						self.round += 1
+						self.level.spawn_creep(self.round)
 					text_surface = my_font.render(f'ROUND {self.round} START!', False, (0, 0, 0))
 
 					#SPAWN SPRITE HERE
-					# self.level.spawn_creep(self.round)
+					
 
 					self.screen.blit(text_surface, (375,125))
 					self.timer += 0.023					
@@ -190,9 +209,9 @@ os.chdir('D:\VS_Code_file\python\IE221\RescureCity\_accelerationGate\setup_code'
 if __name__ == '__main__':
 	game = Game()
 #####################################################
-	# game.run()
-	help(game)
-	
+	game.run()
+	# help(game)
+
 
 
 
@@ -221,14 +240,15 @@ DONE;
 > sub-menu : xem sau có code github [Y]
 > clock đồng hồ -> hiển thị đồng hồ -> youtube [y]
 > các round -> tự chế ik [y]
--> update kĩ năng: auto aim, double trouble -> shield, more sprite, more dame, more speed, more cooldown
--> tạo map 2 mùa: mùa khô và mùa nắng -> trong pydey valley
--> popup thanh chọn: -> làm như setting
+> popup thanh chọn: -> làm như setting [y]
 > animation: đạn, vẽ map -> up hình vô [y]
--> deploy thành game -> how to exe
--> âm thanh -> kiếm âm thanh
--> làm slide
+> âm thanh -> kiếm âm thanh
+> làm slide [y]
+> làm báo cáo
 -> làm oop
--> up youtube
--> làm báo cáo
+> update kĩ năng: auto aim, double trouble -> shield, more sprite, more dame, more speed, more cooldown
+-< tạo map 2 mùa: mùa khô và mùa nắng -> trong pydey valley [x]
+-< deploy thành game -> how to exe [x]
+-< up youtube
+-> docstring
 '''

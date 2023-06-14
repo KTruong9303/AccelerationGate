@@ -6,15 +6,12 @@ TILE_SIZE = 64
 
 #traits
 TRAIT = {
-	0 : 'DESTROYER: bullets will crash each other, + 25% base damage',
+	0 : 'SILVER BULLET: + 25% bullet speed',
 	1 : 'THE MORE THE MERRIER: Give additional bullet.',
-	2 : 'DOUBLE TROUBLE: x2 the amount of bullet',
-	3 : 'GYMER: + 50% base damage',
-	4 : 'TINY: + 50% speed run',
-	5 : 'RICH: - 25% cooldown bullet',
-	6 : 'KHE UOC QUY DU: -50% HP but +100% damage & + 25% speed run',
-	7 : 'SILVER BULLET: + 25% bullet speed',
-	8 : 'DESTROYER: bullets will crash each other, + 25% base damage'
+	2 : 'DOUBLE TROUBLE: x2 Resistance',
+	3 : 'SPEEDO: + 50% speed run',
+	4 : 'RICH: - 50% cooldown bullet',
+	5 : 'KHE UOC QUY DU: -50% HP but x3 bullet & + 25% speed run'
 }
 
 
