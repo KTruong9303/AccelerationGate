@@ -1,6 +1,6 @@
 import pygame
 from settings import *
-from support import *
+from support import import_folder2
 
 class Gate(pygame.sprite.Sprite):
     def __init__(self, pos, groups):
@@ -34,9 +34,11 @@ class Gate(pygame.sprite.Sprite):
 class Clob(pygame.sprite.Sprite):
     def __init__(self, pos, size, groups):
         super().__init__(groups)
-        #self.image = pygame.image.load('../graphics/R.png').convert_alpha()
-        self.image = pygame.Surface(size)
-        self.image.fill('blue')
+        #self.image = pygame.image.load('../graphics/R.png')        
+        self.image = pygame.image.load("../graphics/round ghost/round ghost walk/sprite_0.png").convert_alpha()
+        # self.image = pygame.Surface(size)
+        # self.image.fill('blue')
+        self.image = pygame.transform.scale(self.image,(123,76))
         self.rect = self.image.get_rect(topleft = pos)
         self.old_rect = self.rect.copy()
         self.type = 'clob'

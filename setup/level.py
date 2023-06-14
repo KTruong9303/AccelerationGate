@@ -39,10 +39,32 @@ class Level:
 		self.all_sprites = pygame.sprite.Group()
 		self.collision_sprites = pygame.sprite.Group()
 		self.bullet = pygame.sprite.Group()
+		#trait for player
+		self.mouse_trait = []
+		self.keyboard_trait = []
 		#background
-		self.background = pygame.image.load("../graphics/map.png")
+		self.background = pygame.image.load("../graphics/map_co_ngu/final_map.png")
 		## method: setup
 		self.setup()      #tạo nhân vật
+
+	def spawn_creep(self, round):
+		if round == 2:
+			#generate many mini creep
+			pass
+		elif round == 3:
+			#rain and creep is bigger
+			pass
+		elif round == 4:
+			#generate bigger creep can shoot
+			pass
+		elif round == 5:
+			#1 big boss go circle and shooting
+			pass
+		pass
+
+	def get_trait(self,trait1,trait2):
+		self.mouse_trait.append(trait1)
+		self.keyboard_trait.append(trait2)
 
 	def setup(self):
 		'''
@@ -61,10 +83,10 @@ class Level:
 			None
 		------------
 		'''
-		self.player1 = Keyboard_player((0,0), self.all_sprites, self.collision_sprites,self.bullet)
-		self.player2 = Mouse_player((600,360), self.all_sprites, self.collision_sprites,self.bullet)
-		self.GATE = Gate((640,360),[self.all_sprites,self.collision_sprites])
-		# self.wall1 = Clob((0,0),(100,100),[self.all_sprites,self.collision_sprites])
+		self.player1 = Keyboard_player((100,100), self.all_sprites, self.collision_sprites,self.bullet)
+		self.player2 = Mouse_player((660,400), self.all_sprites, self.collision_sprites,self.bullet)
+		self.GATE = Gate((625,335),[self.all_sprites,self.collision_sprites])
+		self.wall1 = Clob((200,200),(100,100),[self.all_sprites,self.collision_sprites])
 		# self.wall2 = Clob((0,620),(100,100),[self.all_sprites,self.collision_sprites])
 		# self.wall3 = Clob((1180,0),(100,100),[self.all_sprites,self.collision_sprites])
 		# self.wall4 = Clob((1180,620),(100,100),[self.all_sprites,self.collision_sprites])

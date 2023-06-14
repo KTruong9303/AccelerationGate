@@ -5,6 +5,7 @@ from support import import_folder
 # from pygame_textinput import TextInput
 import random as rand
 import math
+import traits
 
 
 class Player(pygame.sprite.Sprite):
@@ -152,7 +153,7 @@ class Player(pygame.sprite.Sprite):
 		if keys[pygame.K_SPACE]:
 			if self.cooldown < 0:
 				self.create_bullet()
-				self.cooldown = 1000
+				self.cooldown = 100
 		 
 	def collision(self): #_chung
 		'''
@@ -190,21 +191,21 @@ class Player(pygame.sprite.Sprite):
 		Return:
 			None
 		'''
-		if self.rect.left < 0:
-			self.rect.left = 0
+		if self.rect.left < 96:
+			self.rect.left = 96
 			self.pos.x = self.rect.x
 			# self.direction.x *= -1
-		if self.rect.right > 1280:
-			self.rect.right = 1280
+		if self.rect.right > 1152:
+			self.rect.right = 1152
 			self.pos.x = self.rect.x
 			# self.direction.x *= -1
 		
-		if self.rect.top < 0:
-			self.rect.top = 0
+		if self.rect.top < 64:
+			self.rect.top = 64
 			self.pos.y = self.rect.y
 			# self.direction.y *= -1
-		if self.rect.bottom > 720:
-			self.rect.bottom = 720
+		if self.rect.bottom > 640:
+			self.rect.bottom = 640
 			self.pos.y = self.rect.y
 			# self.direction.y *= -1
 
@@ -323,8 +324,14 @@ class Bullet(pygame.sprite.Sprite):
 	'''
 	def __init__(self, pos, group,obstacles,side,direction):
 		super().__init__(group)
-		self.image = pygame.Surface((10,10))
-		self.image.fill((0,255,255))
+		# self.import_assets('bullet')
+		# self.status = 'flying'
+		# self.frame_index = 0
+		# self.image = self.animations[self.status][int(self.frame_index)]
+		# self.image = pygame.Surface((10,10))
+				# self.image.fill((0,255,255))
+		self.image = pygame.image.load('../graphics/bullet/shuriken.png').convert_alpha()
+		pygame.transform.scale(self.image,(16,16))
 		self.rect = self.image.get_rect(center = pos)
 		self.mask = pygame.mask.from_surface(self.image)
 		self.getmouse_pos = pygame.mouse.get_pos()
@@ -339,11 +346,45 @@ class Bullet(pygame.sprite.Sprite):
 		self.nor_direct = pygame.math.Vector2()
 		self.direct()
 		
+	def import_assets(self,assets): #riêng
+		'''
+		A function import the image asset for player. Update to self.animations 
+		...
+		Parameter:
+		---------
+		Return:
+			None
+		---------
+		'''
+		#chứa gif
+		path = '../graphics/' + assets + '/'
+		self.animations = {'flying': [],'explode': []}
+		for animation in self.animations.keys():
+			full_path = path + animation
+			self.animations[animation] = import_folder(full_path)
+
+
+	def animate(self,dt):  #_chung
+		'''
+		A function that change the image from asset
+		Parameters:
+			dt (float): delta time to make the image update following the frame
+		Return:
+			None
+		'''
+		self.frame_index += 4 * dt #tốc độ gif
+		if self.frame_index >= len(self.animations[self.status]):
+			self.frame_index = 0
+
+		self.image = self.animations[self.status][int(self.frame_index)]
+
+
 	def collision(self):
 		#if self.rect.colliderect(self.obstacles.rect):
 			# collision_sprites.append(self.obstacles)
 		if pygame.sprite.spritecollide(self,self.obstacles, False,pygame.sprite.collide_mask):
 			self.image = pygame.Surface((20,20))
+			# self.image = pygame.image.load('../graphics/bullet/shuriken')
 			self.image.fill((0,255,0))
 			self.speed = 2500
 		#window
@@ -362,6 +403,8 @@ class Bullet(pygame.sprite.Sprite):
 		self.rect.x += self.speed * dt * self.nor_direct.x
 		self.rect.y += self.speed * dt * self.nor_direct.y
 		self.collision()
+		# self.animate(dt)
+
 
 class Keyboard_player(Player):
 	def __init__(self, pos, group, obstacles,bullet):   #vị trí và camera
@@ -420,7 +463,7 @@ class Keyboard_player(Player):
 			if keys[pygame.K_SPACE]:
 				self.create_bullet(bullets)
 				#self.shoot
-				self.cooldown = 1000
+				self.cooldown = 100
 		else:
 			self.cooldown -= 4
 
@@ -449,7 +492,7 @@ class Keyboard_player(Player):
 		for buls in location:
 			Bullet(buls,[self.gr,self.bullet],self.obstacles,0,self.rect.center)
 		
-	def health_bar(self,x = 0,y = 0,w = 10,h = 720,ratio = 1): 
+	def health_bar(self,x = 0,y = 0,w = 10,h = 800,ratio = 1): 
 		'''
 		A function draw a health bar and update it along to ratio
 		Parameters:
@@ -460,7 +503,7 @@ class Keyboard_player(Player):
 			None
 		'''
 		pygame.draw.rect(self.screen, 'red', (x,y,w,h))
-		pygame.draw.rect(self.screen, 'green', (x,720-ratio*h,w,h*ratio))
+		pygame.draw.rect(self.screen, 'green', (x,800-ratio*h,w,h*ratio))
 	def get_damage(self):      
 		'''
 		A function update the health through self.ratio whenever get shoot
@@ -518,7 +561,7 @@ class Mouse_player(Player):
 		if pygame.mouse.get_pressed()[0]:
 			if self.cooldown < 0:
 				self.create_bullet()
-				self.cooldown = 1000
+				self.cooldown = 100
 	def create_bullet(self):
 		'''
 		A function create a bullet when it's called
@@ -531,9 +574,9 @@ class Mouse_player(Player):
 		'''
 		direction = pygame.mouse.get_pos()
 		return Bullet(self.rect.center,[self.gr,self.bullet],self.obstacles,1,direction)
-	def health_bar(self,x = 1270,y = 0,w = 10,h = 720,ratio =1):
+	def health_bar(self,x = 1270,y = 0,w = 10,h = 800,ratio =1):
 		pygame.draw.rect(self.screen, 'red', (x,y,w,h))
-		pygame.draw.rect(self.screen, 'green', (x,720-h*ratio,w,ratio*h))		 
+		pygame.draw.rect(self.screen, 'green', (x,800-h*ratio,w,ratio*h))		 
 	def get_damage(self):
 		collision_sprites = pygame.sprite.spritecollide(self,self.bullet, False, pygame.sprite.collide_mask)
 		for sprite in collision_sprites:
