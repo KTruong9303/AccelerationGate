@@ -1,0 +1,83 @@
+class Game:		
+	"""
+	A class store general set up, for Game Loop, Main setting 
+	...
+	Atributes:
+		screen <class pygame.surface.Surface>: create a screen
+		clock <class pygame.tiem.Clock>: create time
+		level <class level.Level>: create objects
+		background <class pygame.surface.Surface>: create background
+	---------
+	Methods
+    load_button():
+		  A function load the button image
+		run():
+			run the game.
+	-------
+ 
+ class Level:
+	
+	A class create and draw objects in game.
+	...
+	Atributes:
+		display_surface  <class 'pygame.surface.Surface'>: 
+		all_sprites <class 'pygame.sprite.Group'>: group contain all sprites
+		collision_sprites <class 'pygame.sprite.Group'>: group contain sprite have collision
+		bullet 	<class 'pygame.sprite.Group'>: group for bullet
+		background  <class 'pygame.surface.Surface'>:  load background
+	----------
+	Methods:
+    spawn_creep(self, round): function create creep every round
+		setup(): create objects in game: player, wall
+		run(dt): draw all objects and update continously
+    get_trait(trait1,trait2): function update player skill
+      input: trait1 - skill of player use keyboard, trait2 - skill of player use mouse
+	----------
+	
+  class Player(pygame.sprite.Sprite):
+	
+	A class for setting player in game
+	...
+		Attributes:
+			pos (tuple): position of player when created
+			group <class pygame.sprite.Group>: declare which group the player is in
+			obstacles <class pygame.sprite.Group>: declare groups that cause collision
+			bullet <class pygame,sprite.Group>: declare bullet groups to generate or get damamge on collision
+			status (str): set the status name
+			frame_index (int): index for image in the asset
+			animations (dict): store the folder name of status and its images
+			image <class pygame.surface.Surface>: image of player
+			rect <class pygame.rect.Rect>: rectangle of player
+			old_rect <class pygame.rect.Rect>: old rectangle to know if collision
+			direction <class pygame.math.Vector2>: the direction of the player when move
+			pos <class pygame.math.Vector2>: the position of player
+			speed (int): the speed of player when moving
+			cooldown (int): cooldown after shooting bullet
+			angle (int): the angle for aiming
+			heal (int): health of player
+			screen <class pygame.surface.Surface>: get the background
+			ratio (float): how much a bullet can hurt
+		------------
+		Methods:
+			import_assets: import the assets to player
+			animate: change the image from assets continously to look more lively
+			input: get input from person
+			collision: set collision with objects
+			window_collision: prevent player get outside the window
+			get_status: get the current status of player to set the proper image 
+			move: help player moving
+			create_bullet: create a bullet
+			healh_bar: update the health bar
+			get_damage: reduce health when get shoot, print Game Over
+		-----------
+    
+    def import_folder(path):
+    '''
+    a function that helps loading asset
+    ...
+    Parameter:
+        path: path to the folder contain picture of asset
+    --------
+    Return:
+        a list contain images that loaded and converted to alpha.
+    '''
