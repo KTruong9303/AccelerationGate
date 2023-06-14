@@ -71,6 +71,30 @@ class Game:
 			get_damage: reduce health when get shoot, print Game Over
 		-----------
     
+    
+class Bullet(pygame.sprite.Sprite):
+	'''
+	A class create a bullet from player:
+	Attributes:
+		pos (tuple): position of player when created
+		group <class pygame.sprite.Group>: declare which group the bullet is in
+		obstacles <class pygame.sprite.Group>: declare groups that cause collision
+		side (int): to know who this bullet from
+		self.image <class Surface>: 
+		self.image.fill((0,255,255)):
+		self.rect = self.image.get_rect(center = pos)
+		self.getmouse_pos = pygame.mouse.get_pos()
+		self.side = side
+		self.obstacles = obstacles
+		self.group = group
+		self.speed = 1000
+		self.old_rect = self.rect.copy()
+		self.direction = pygame.math.Vector2()  #hướng đi
+		self.angle = 0
+		self.angle_speed = 10
+			
+	'''
+    
     def import_folder(path):
     '''
     a function that helps loading asset
