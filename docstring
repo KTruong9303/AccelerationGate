@@ -3,20 +3,27 @@ class Game:
 	A class store general set up, for Game Loop, Main setting 
 	...
 	Atributes:
-		screen <class pygame.surface.Surface>: create a screen
 		clock <class pygame.tiem.Clock>: create time
-		level <class level.Level>: create objects
+		screen <class pygame.surface.Surface>: create a screen
+		level <class level.Level>: create o	bjects
 		background <class pygame.surface.Surface>: create background
+		game_paused <bool>: to check if game is paused or not
+		menu_state <string>: to set which menu to show
+		round <int>: indicate the row
+		timer <float>: to get the real time count (second)
+		A_picked <int>: to know if player 1 have chosen skill yet 
+		B_picked <int>: to know if player 2 have chosen skill yet
+		rand <bool>: to get only one random number
 	---------
 	Methods
-    load_button():
-		  A function load the button image
 		run():
 			run the game.
+		load_button():
+			load the button image and show it to the screen
 	-------
  
- class Level:
-	
+class Level:
+	'''
 	A class create and draw objects in game.
 	...
 	Atributes:
@@ -27,15 +34,14 @@ class Game:
 		background  <class 'pygame.surface.Surface'>:  load background
 	----------
 	Methods:
-    spawn_creep(self, round): function create creep every round
 		setup(): create objects in game: player, wall
 		run(dt): draw all objects and update continously
-    get_trait(trait1,trait2): function update player skill
-      input: trait1 - skill of player use keyboard, trait2 - skill of player use mouse
+		spawn_creep(round): create creep each round
+		get_trait(trait1,trait2): to get skill and apply skill to player's character
 	----------
 	
-  class Player(pygame.sprite.Sprite):
-	
+class Player(pygame.sprite.Sprite):
+	'''
 	A class for setting player in game
 	...
 		Attributes:
@@ -48,14 +54,14 @@ class Game:
 			animations (dict): store the folder name of status and its images
 			image <class pygame.surface.Surface>: image of player
 			rect <class pygame.rect.Rect>: rectangle of player
-			old_rect <class pygame.rect.Rect>: old rectangle to know if collision
+			old_rect <class pygame.rect.Rect>: old rectangle to know if collision and what direction
 			direction <class pygame.math.Vector2>: the direction of the player when move
 			pos <class pygame.math.Vector2>: the position of player
 			speed (int): the speed of player when moving
 			cooldown (int): cooldown after shooting bullet
 			angle (int): the angle for aiming
 			heal (int): health of player
-			screen <class pygame.surface.Surface>: get the background
+			screen <class pygame.surface.Surface>: get the screen surface 
 			ratio (float): how much a bullet can hurt
 		------------
 		Methods:
@@ -69,9 +75,23 @@ class Game:
 			create_bullet: create a bullet
 			healh_bar: update the health bar
 			get_damage: reduce health when get shoot, print Game Over
+			update: update the player state
 		-----------
-    
-    
+class Keyboard_player(Player):
+	'''
+	A class for player using keyboard
+	Attributes: inherit from Player
+		angle (int): to seperate many bullet by angle
+	Methods: inherit from Player
+	'''
+class Mouse_player(Player):
+	'''
+	A class for player using Mouse
+	Attributes: inherit from Player
+		destination <Vector2>: to get place mouse right click
+	Methods: inherit from Player
+		modify function: input, create_bullet, health_bar, get_damage.
+	'''
 class Bullet(pygame.sprite.Sprite):
 	'''
 	A class create a bullet from player:
@@ -79,23 +99,64 @@ class Bullet(pygame.sprite.Sprite):
 		pos (tuple): position of player when created
 		group <class pygame.sprite.Group>: declare which group the bullet is in
 		obstacles <class pygame.sprite.Group>: declare groups that cause collision
-		side (int): to know who this bullet from
-		self.image <class Surface>: 
-		self.image.fill((0,255,255)):
-		self.rect = self.image.get_rect(center = pos)
-		self.getmouse_pos = pygame.mouse.get_pos()
-		self.side = side
-		self.obstacles = obstacles
-		self.group = group
-		self.speed = 1000
-		self.old_rect = self.rect.copy()
-		self.direction = pygame.math.Vector2()  #hướng đi
-		self.angle = 0
-		self.angle_speed = 10
-			
+		side (int): to know who this bullet shooted from
+		image <class Surface>: image of bullet
+		rect <class pygame.rect>: get rectangle for image
+		getmouse_pos <class pygame.mouse>: get mouse position
+		speed (int): speed run of bullet
+		old_rect <class pygame.rect>: copy of passed rect to check collision direction
+		direction <class Vector2>: to set bullet's direction
+		angle (int): let the bullet go around character
+		angle_speed (int): define how fast the bullet turn around 
+	Method:
+		import_assets: to get the animation image 
+		animate: to change bullet image continuously
+		collision: check collision with person and window
+		direct: to get the direction
+		update: update the bullet state
 	'''
-    
-    def import_folder(path):
+
+class Gate(pygame.sprite.Sprite):
+    '''
+    A class to draw object Gate and its collision
+    Attributes:
+        frame_index (int): index for image in the asset        
+        screen <class pygame.surface.Surface>: get the screen surface 
+        image <class pygame.surface.Surface>: image of gate
+        rect <class pygame.rect.Rect>: rectangle of gate
+        mask <class pygame.mask>: mask of the image 
+        old_rect <class pygame.rect.Rect>: old rectangle to know if collision and what direction
+    Methods:
+        import_assets: import the assets to player
+        animate: change the image from assets continously to look more lively
+        update: update the gate image
+    '''
+class Clob(Gate):
+    '''
+    A class of creeps
+    Attribute: inherit from Gate
+        size (tuple): to set the image size
+        direction (Vector2): to set the direction 
+    Methods:
+        window_collision: to get collision with window
+        move: to automatically move the creep
+        update: update the creep state
+    '''
+class Button():
+	'''
+	A class to deal with interaction with button
+	Attributes:
+		width(int): width of the image
+		height(int): height of the image
+		image <class pygame.image>: image of button
+		rect <class pygame.rect>: rectangle of image
+		clicked (bool) to know if the button is clicked
+	Methods:
+		draw(surface): draw the button and return True if it's clicked
+	'''
+
+
+def import_folder(path):
     '''
     a function that helps loading asset
     ...
