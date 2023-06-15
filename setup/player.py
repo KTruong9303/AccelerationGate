@@ -1,12 +1,9 @@
 import pygame
+from sprites import Gate
+# from python.IE221.RescureCity._accelerationGate.setup_code.sprites import Gate
 from settings import *
 from support import import_folder
-# import pygame_textinput
-# from pygame_textinput import TextInput
-import random as rand
 import math
-import traits
-
 
 class Player(pygame.sprite.Sprite):
 	'''
@@ -22,14 +19,14 @@ class Player(pygame.sprite.Sprite):
 			animations (dict): store the folder name of status and its images
 			image <class pygame.surface.Surface>: image of player
 			rect <class pygame.rect.Rect>: rectangle of player
-			old_rect <class pygame.rect.Rect>: old rectangle to know if collision
+			old_rect <class pygame.rect.Rect>: old rectangle to know if collision and what direction
 			direction <class pygame.math.Vector2>: the direction of the player when move
 			pos <class pygame.math.Vector2>: the position of player
 			speed (int): the speed of player when moving
 			cooldown (int): cooldown after shooting bullet
 			angle (int): the angle for aiming
 			heal (int): health of player
-			screen <class pygame.surface.Surface>: get the background
+			screen <class pygame.surface.Surface>: get the screen surface 
 			ratio (float): how much a bullet can hurt
 		------------
 		Methods:
@@ -43,6 +40,7 @@ class Player(pygame.sprite.Sprite):
 			create_bullet: create a bullet
 			healh_bar: update the health bar
 			get_damage: reduce health when get shoot, print Game Over
+			update: update the player state
 		-----------
 	'''
 	def __init__(self, pos, group, obstacles,bullet):   #vị trí và camera
@@ -115,6 +113,11 @@ class Player(pygame.sprite.Sprite):
 			full_path = path + animation
 			self.animations[animation] = import_folder(full_path)
 	def implement_traits(self):
+		'''
+		A function to implement skill to player.
+		Parameters: None
+		Return: None
+		'''
 		if self.traits == 0:
 			self.buls_speed *= 1.5
 		elif self.traits == 1:
@@ -193,7 +196,7 @@ class Player(pygame.sprite.Sprite):
 		'''
 		collision_sprites = pygame.sprite.spritecollide(self,self.obstacles, False)#, pygame.sprite.collide_mask)
 		if collision_sprites:
-			self.ratio -= 0.001
+			self.ratio -= 0.01
 			pygame.draw.circle(self.screen,'red',self.rect.center,20,3)
 			for sprite in collision_sprites:
 					#collision on the right
@@ -316,9 +319,9 @@ class Player(pygame.sprite.Sprite):
 
 		if self.ratio < 0:
 			pygame.font.init()
-			my_font = pygame.font.SysFont('Comic Sans MS', 30)
-			text_surface = my_font.render(f'Game Over: Bear Win!', False, (0, 0, 0))
-			self.screen.blit(text_surface, (500,0))
+			my_font = pygame.font.SysFont('Comic Sans MS', 40)
+			text_surface = my_font.render(f'Game Over: Win!', False, (0, 0, 0))
+			self.screen.blit(text_surface, (375,125))
 	
 	def update(self, dt):      #_chung
 		'''
@@ -343,20 +346,21 @@ class Bullet(pygame.sprite.Sprite):
 		pos (tuple): position of player when created
 		group <class pygame.sprite.Group>: declare which group the bullet is in
 		obstacles <class pygame.sprite.Group>: declare groups that cause collision
-		side (int): to know who this bullet from
-		self.image <class Surface>: 
-		self.image.fill((0,255,255)):
-		self.rect = self.image.get_rect(center = pos)
-		self.getmouse_pos = pygame.mouse.get_pos()
-		self.side = side
-		self.obstacles = obstacles
-		self.group = group
-		self.speed = 1000
-		self.old_rect = self.rect.copy()
-		self.direction = pygame.math.Vector2()  #hướng đi
-		self.angle = 0
-		self.angle_speed = 10
-			
+		side (int): to know who this bullet shooted from
+		image <class Surface>: image of bullet
+		rect <class pygame.rect>: get rectangle for image
+		getmouse_pos <class pygame.mouse>: get mouse position
+		speed (int): speed run of bullet
+		old_rect <class pygame.rect>: copy of passed rect to check collision direction
+		direction <class Vector2>: to set bullet's direction
+		angle (int): let the bullet go around character
+		angle_speed (int): define how fast the bullet turn around 
+	Method:
+		import_assets: to get the animation image 
+		animate: to change bullet image continuously
+		collision: check collision with person and window
+		direct: to get the direction
+		update: update the bullet state
 	'''
 	def __init__(self, pos, group,obstacles,side,direction,speed):
 		super().__init__(group)
@@ -399,7 +403,6 @@ class Bullet(pygame.sprite.Sprite):
 			full_path = path + animation
 			self.animations[animation] = import_folder(full_path)
 
-
 	def animate(self,dt):  #_chung
 		'''
 		A function that change the image from asset
@@ -413,7 +416,6 @@ class Bullet(pygame.sprite.Sprite):
 			self.frame_index = 0
 
 		self.image = self.animations[self.status][int(self.frame_index)]
-
 
 	def collision(self):
 		#if self.rect.colliderect(self.obstacles.rect):
@@ -438,10 +440,14 @@ class Bullet(pygame.sprite.Sprite):
 		self.rect.x += self.speed * dt * self.nor_direct.x
 		self.rect.y += self.speed * dt * self.nor_direct.y
 		self.collision()
-		# self.animate(dt)
-
 
 class Keyboard_player(Player):
+	'''
+	A class for player using keyboard
+	Attributes: inherit from Player
+		angle (int): to seperate many bullet by angle
+	Methods: inherit from Player
+	'''
 	def __init__(self, pos, group, obstacles,bullet):   #vị trí và camera
 		self.import_assets('character')
 		super().__init__(pos,group,obstacles,bullet)
@@ -562,11 +568,18 @@ class Keyboard_player(Player):
 
 		if self.ratio < 0:
 			pygame.font.init()
-			my_font = pygame.font.SysFont('Comic Sans MS', 30)
-			text_surface = my_font.render(f'Game Over: Bear Win!', False, (0, 0, 0))
-			self.screen.blit(text_surface, (500,0))
+			my_font = pygame.font.SysFont('Comic Sans MS', 45)
+			text_surface = my_font.render(f'Game Over: Older Win!', False, (0, 0, 0))
+			self.screen.blit(text_surface, (375,125))
 		
 class Mouse_player(Player):
+	'''
+	A class for player using Mouse
+	Attributes: inherit from Player
+		destination <Vector2>: to get place mouse right click
+	Methods: inherit from Player
+		modify function: input, create_bullet, health_bar, get_damage.
+	'''
 	def __init__(self, pos, group, obstacles,bullet):   #vị trí và camera
 		self.import_assets('character2')
 		super().__init__(pos, group, obstacles,bullet)
@@ -629,7 +642,6 @@ class Mouse_player(Player):
 				self.ratio -= self.ratio_loss
 		if self.ratio < 0:
 			pygame.font.init()
-			my_font = pygame.font.SysFont('Comic Sans MS', 30)
-			text_surface = my_font.render(f'Game Over: Soldier Win!', False, (0, 0, 0))
-			self.screen.blit(text_surface, (500,0))	 
-	
+			my_font = pygame.font.SysFont('Comic Sans MS', 45)
+			text_surface = my_font.render(f'Game Over: Ninja Win!', False, (0, 0, 0))
+			self.screen.blit(text_surface, (375,125))

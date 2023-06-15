@@ -4,6 +4,20 @@ from support import *
 import random as rand
 
 class Gate(pygame.sprite.Sprite):
+    '''
+    A class to draw object Gate and its collision
+    Attributes:
+        frame_index (int): index for image in the asset        
+        screen <class pygame.surface.Surface>: get the screen surface 
+        image <class pygame.surface.Surface>: image of gate
+        rect <class pygame.rect.Rect>: rectangle of gate
+        mask <class pygame.mask>: mask of the image 
+        old_rect <class pygame.rect.Rect>: old rectangle to know if collision and what direction
+    Methods:
+        import_assets: import the assets to player
+        animate: change the image from assets continously to look more lively
+        update: update the gate image
+    '''
     def __init__(self, pos, groups):
         super().__init__(groups)
         #load the gif before
@@ -17,7 +31,6 @@ class Gate(pygame.sprite.Sprite):
         # self.rect = pygame.draw.circle(self.screen, 'red', pos, 360)
         # pygame.draw.circle(self.image, 'red', (200,200), 5)
         self.old_rect = self.rect.copy()
-        self.type = 'gate'
         
     def import_assets(self):
 		#chứa gif
@@ -33,6 +46,16 @@ class Gate(pygame.sprite.Sprite):
         self.animate(dt)
 
 class Clob(Gate):
+    '''
+    A class of creeps
+    Attribute: inherit from Gate
+        size (tuple): to set the image size
+        direction (Vector2): to set the direction 
+    Methods:
+        window_collision: to get collision with window
+        move: to automatically move the creep
+        update: update the creep state
+    '''
     def __init__(self, pos, size, groups):
         self.size = size
         super().__init__(pos,groups)
@@ -44,7 +67,6 @@ class Clob(Gate):
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(topleft = pos)
         self.old_rect = self.rect.copy()
-        self.type = 'clob'
         self.pos = pygame.math.Vector2(self.rect.center)
         self.direction = pygame.math.Vector2()
         self.direction.x = 1

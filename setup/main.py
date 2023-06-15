@@ -14,29 +14,46 @@ class Game:
 	A class store general set up, for Game Loop, Main setting 
 	...
 	Atributes:
-		screen <class pygame.surface.Surface>: create a screen
 		clock <class pygame.tiem.Clock>: create time
-		level <class level.Level>: create objects
+		screen <class pygame.surface.Surface>: create a screen
+		level <class level.Level>: create o	bjects
 		background <class pygame.surface.Surface>: create background
+		game_paused <bool>: to check if game is paused or not
+		menu_state <string>: to set which menu to show
+		round <int>: indicate the row
+		timer <float>: to get the real time count (second)
+		A_picked <int>: to know if player 1 have chosen skill yet 
+		B_picked <int>: to know if player 2 have chosen skill yet
+		rand <bool>: to get only one random number
 	---------
 	Methods
 		run():
 			run the game.
+		load_button():
+			load the button image and show it to the screen
 	-------
 	"""																					
 	def __init__(self):
 		"""
 		Constructs all the necessary attributes for the game.
-		Parameters
+		Parameters: None
+		Attributes:
 			screen <class pygame.surface.Surface>: create a screen
 			clock <class pygame.tiem.Clock>: create time
 			level <class level.Level>: create objects
 			background <class pygame.surface.Surface>: create background
+			game_paused <bool>: to check if game is paused or not
+			menu_state <string>: to set which menu to show
+			round <int>: indicate the row
+			timer <float>: to get the real time count (second)
+			A_picked <int>: to know if player 1 have chosen skill yet 
+			B_picked <int>: to know if player 2 have chosen skill yet
+			rand <bool>: to get only one random number
 		----------
 			
 		Returns
+			None
 		-------
-		None
 		"""
 		pygame.init()
 		self.screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))  #độ lớn màn hình
@@ -62,6 +79,17 @@ class Game:
 	def load_button(self):
 		'''
 		A function load the button image
+		Parameter: None
+		Attributes:
+			resume_button }
+			option_button }
+			quit_button   } -> buttons in setting
+			back_button   }
+			volume_button }
+			trait1_button     }
+			trait2_button     }-> traits showed each round
+			trait3_button	  }
+		Return: None
 		'''
 		resume_img = pygame.image.load("../graphics/button/resume.png").convert_alpha()
 		option_img = pygame.image.load("../graphics/button/option.png").convert_alpha()
@@ -84,11 +112,10 @@ class Game:
 	def run(self):
 		"""
 		create Game loop, run the game.
-		Parameters
+		Parameters: None
 		-----------
-		Returns
+		Returns: None
 		--------
-		None
 		"""
 		while True: #Gameloop
 			self.screen.blit(self.background, (0, 0))
@@ -156,18 +183,14 @@ class Game:
 						self.round += 1
 						self.level.spawn_creep(self.round)
 					text_surface = my_font.render(f'ROUND {self.round} START!', False, (0, 0, 0))
-
-					#SPAWN SPRITE HERE
-					
-
 					self.screen.blit(text_surface, (375,125))
-					self.timer += 0.023					
+					self.timer += 0.01					
 
 	#continuous reality
 				else:
 		#timer	
-					dt = self.clock.tick(600) / 1000   #delta time
-					self.timer += 1/60#0.0083 # XAP XI 1/120
+					dt = self.clock.tick(60) / 1000   #delta time
+					self.timer += 1/60 
 		#visualize timer
 					text_surface = my_font.render(f'TIME: {31-round(self.timer)} s', False, (0, 0, 0))
 					self.screen.blit(text_surface, (510,15))
@@ -178,14 +201,13 @@ class Game:
 						if self.round > 1:
 							# pick traits:
 							pass
-						print('TIME UP!')
+						print(f'TIME UP!{self.round}')
 						self.timer = -1
 						self.game_paused = True
 						self.menu_state = 'pick_trait'
 
 					self.level.run(dt)    
 					# pygame.display.flip()   #????
-
 	#get input
 			for event in pygame.event.get():  #exit game
 				if event.type == pygame.KEYDOWN:
@@ -200,7 +222,6 @@ class Game:
 	#update
 			pygame.display.update()   #????
 
-			
 
 '=============Run the game====================================================='
 import os
@@ -251,4 +272,5 @@ DONE;
 -< deploy thành game -> how to exe [x]
 -< up youtube
 -> docstring
+-> game state
 '''

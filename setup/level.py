@@ -18,6 +18,8 @@ class Level:
 	Methods:
 		setup(): create objects in game: player, wall
 		run(dt): draw all objects and update continously
+		spawn_creep(round): create creep each round
+		get_trait(trait1,trait2): to get skill and apply skill to player's character
 	----------
 	'''
 	def __init__(self):
@@ -79,6 +81,10 @@ class Level:
 	def get_trait(self,trait1,trait2):
 		'''
 		function update player skill
+		Parameters:
+			trait1 <int>: skill from player1
+			trait2 <int>: skill from player2
+		Return: None
 		'''
 		self.player1.traits = trait1
 		self.player2.traits = trait2
