@@ -224,53 +224,9 @@ class Game:
 
 
 '=============Run the game====================================================='
-import os
-os.chdir('D:\VS_Code_file\python\IE221\RescureCity\_accelerationGate\setup_code')
 
 if __name__ == '__main__':
 	game = Game()
 #####################################################
 	game.run()
 	# help(game)
-
-
-
-
-
-'''
-Game Cổng Gia Tốc [Acceleration Gate]
-_______________________
-|   	      		  |
-|   	  \    	  o	  |
-|   	   \ 		  |
-|  o	    \		  |
-|_____________________|
-A: attack
-D: Defense
-Rule: 2 bên bắn nhau liên tục
-	- có thanh máu 100
-	- stop các round chọn skill: hồi máu, hút máu, đốt, sát thương, khế ước quỷ dữ, khiên, đạn phá đạn, đạn nổ tạo 1 vùng, đạn nổ tóe ra, tàn hình, tăng tốc độ di chuyển... 
-Cốt truyện: 2 nhà Khoa học đại tài Vayce và Jiktor đã nghiên cứu thành công 1 cỗ máy có tên là hextech. Vayce muốn dùng cỗ máy này để giúp mọi người, còn Jiktor muốn sử dụng cỗ máy để cứu em gái mình. 2 bên xảy ra mâu thuẫn và quyết chiến với nhau.
-DONE;
-> tạo 2 nhân vật: di chuyển [y]
-> map: hình ảnh, cổng gia tốc [y]
-> bắn đạn [y]
-> chịu sát thương -> hiển thị thanh máu [y]
-> đạn qua cổng gia tốc [y]
-> cơ chế tự động nhắm how about có cái cần chỉnh độ lên và độ xuống nhể -> ko bik [y]
-> sub-menu : xem sau có code github [Y]
-> clock đồng hồ -> hiển thị đồng hồ -> youtube [y]
-> các round -> tự chế ik [y]
-> popup thanh chọn: -> làm như setting [y]
-> animation: đạn, vẽ map -> up hình vô [y]
-> âm thanh -> kiếm âm thanh
-> làm slide [y]
-> làm báo cáo
--> làm oop
-> update kĩ năng: auto aim, double trouble -> shield, more sprite, more dame, more speed, more cooldown
--< tạo map 2 mùa: mùa khô và mùa nắng -> trong pydey valley [x]
--< deploy thành game -> how to exe [x]
--< up youtube
--> docstring
--> game state
-'''
