@@ -7,6 +7,7 @@ Game được tạo bằng Pygame
  - chuột phải: di chuyển
  - chuột trái: tấn công
  - chọn skill: chuột phải
+ <p></p> 
 <p>Player dùng bàn phím</p> 
 - di chuyển: AWSD hoặc phím điều hướng
 - tấn công: phím space
