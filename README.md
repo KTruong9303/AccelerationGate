@@ -2,12 +2,12 @@
 Đồ án môn học IE221
 the first pygame project
 
-Game được tạo full bằng Pygame
-Player dùng chuột:
+Game được tạo bằng Pygame
+<p>Player dùng chuột:</p>
  - chuột phải: di chuyển
  - chuột trái: tấn công
  - chọn skill: chuột phải
-Player dùng bàn phím
+<p>Player dùng bàn phím</p> 
 - di chuyển: AWSD hoặc phím điều hướng
 - tấn công: phím space
 - chọn skill: phím 1 2 3
